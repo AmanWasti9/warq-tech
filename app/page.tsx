@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,8 +31,12 @@ import { TestimonialSlider } from "@/components/testimonial-slider"
 import { TestimonialStats } from "@/components/testimonial-stats"
 import { TechnologyShowcase } from "@/components/technology-showcase"
 import { TechnologyGrid } from "@/components/technology-grid"
+import emailjs from 'emailjs-com';
 
 export default function HomePage() {
+  // const form = useRef();
+  const form = useRef<HTMLFormElement>(null);
+
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -43,6 +47,29 @@ export default function HomePage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+            'service_eaw5y7r',
+            'template_jntsevk',
+            form.current!, // <-- non-null assertion
+            "x2Rj-TukOxeJQEB38" // Use the PUBLIC key from EmailJS dashboard
+      )
+      .then(
+        (result) => {
+          alert("Message sent successfully!");
+          form.current?.reset();
+        },
+        (error) => {
+          alert("Failed to send message. Try again later.");
+          console.error(error.text);
+        }
+      );
+  };
 
   const services = [
     {
@@ -578,93 +605,99 @@ export default function HomePage() {
 
         {/* Contact Section */}
         <section id="contact" className="py-20 lg:py-32 bg-muted/30">
-          <div className="container px-4 md:px-6">
-            <ScrollAnimation>
-              <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
-                <Badge variant="outline">Get In Touch</Badge>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-poppins">
-                  Ready to Start Your Project?
-                </h2>
-                <p className="max-w-[600px] text-muted-foreground text-lg leading-relaxed">
-                  Let's discuss your project requirements and how we can help
-                  bring your vision to life.
-                </p>
-              </div>
-            </ScrollAnimation>
-
-            <ScrollAnimation delay={200}>
-              <div className="mx-auto max-w-2xl">
-                <Card className="border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 shadow-2xl">
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-poppins">
-                      Contact WARQ Technology
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                      Fill out the form below and we'll get back to you within
-                      24 hours.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                          First Name
-                        </label>
-                        <input
-                          className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                          placeholder="John"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Last Name</label>
-                        <input
-                          className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                          placeholder="Doe"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Email</label>
-                      <input
-                        className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                        placeholder="john@example.com"
-                        type="email"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Service Needed
-                      </label>
-                      <select className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
-                        <option>Select a service</option>
-                        <option>Web Development</option>
-                        <option>Mobile App Development</option>
-                        <option>E-commerce Development</option>
-                        <option>Custom Software</option>
-                        <option>UI/UX Design</option>
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Project Details
-                      </label>
-                      <textarea
-                        className="flex min-h-[100px] w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                        placeholder="Tell us about your project requirements..."
-                      />
-                    </div>
-                    <Button
-                      className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200"
-                      size="lg"
-                    >
-                      Send Message <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </ScrollAnimation>
+      <div className="container px-4 md:px-6">
+        <ScrollAnimation>
+          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
+            <Badge variant="outline">Get In Touch</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-poppins">
+              Ready to Start Your Project?
+            </h2>
+            <p className="max-w-[600px] text-muted-foreground text-lg leading-relaxed">
+              Let's discuss your project requirements and how we can help bring your vision to life.
+            </p>
           </div>
-        </section>
+        </ScrollAnimation>
+
+        <ScrollAnimation delay={200}>
+          <div className="mx-auto max-w-2xl">
+            <Card className="border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 shadow-2xl">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-poppins">Contact WARQ Technology</CardTitle>
+                <CardDescription className="text-base">
+                  Fill out the form below and we'll get back to you within 24 hours.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <form ref={form} onSubmit={sendEmail}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2 mt-4">
+                      <label className="text-sm font-medium">First Name</label>
+                      <input
+                        name="first_name"
+                        required
+                        className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div className="space-y-2 mt-4">
+                      <label className="text-sm font-medium">Last Name</label>
+                      <input
+                        name="last_name"
+                        required
+                        className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    <label className="text-sm font-medium">Email</label>
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    <label className="text-sm font-medium">Service Needed</label>
+                    <select
+                      name="service"
+                      required
+                      className="flex h-11 w-full rounded-lg border border-input bg-background/50 px-4 py-2 text-sm"
+                    >
+                      <option value="">Select a service</option>
+                      <option>Web Development</option>
+                      <option>Mobile App Development</option>
+                      <option>E-commerce Development</option>
+                      <option>Custom Software</option>
+                      <option>UI/UX Design</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    <label className="text-sm font-medium">Project Details</label>
+                    <textarea
+                      name="message"
+                      required
+                      className="flex min-h-[100px] w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-sm resize-none"
+                      placeholder="Tell us about your project requirements..."
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 mt-4"
+                    size="lg"
+                  >
+                    Send Message <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </ScrollAnimation>
+      </div>
+    </section>
+
 
         {/* Footer */}
         <footer className="border-t bg-background/80 backdrop-blur-sm">
